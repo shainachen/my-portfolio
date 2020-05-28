@@ -1,7 +1,19 @@
 #content {
   margin-left: auto;
   margin-right: auto;
-  width: 650px;
+  width: 1000px;
+}
+
+#header {
+  padding: 72px;
+  text-align: center;
+  background: #bee4dc;
+  color: rgb(7, 46, 53);
+  font-size: 28px;
+}
+
+#sidebarlink {
+  text-align: right;  
 }
 
 #greeting-container {
