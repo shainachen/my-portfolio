@@ -7,3 +7,23 @@
 #greeting-container {
   margin-top: 20px;
 }
+
+img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.row {
+  display: flex;
+  padding: 0 4px;
+}
+
+.col {
+  max-width: 50%;
+  padding-right: 2px;
+}
+
+.col img {
+  margin-top: 4px;
+  vertical-align: middle;
+}
