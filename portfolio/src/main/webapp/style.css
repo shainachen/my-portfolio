@@ -2,10 +2,13 @@
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  float: right;
+  float: left;
   background-color: rgb(3, 152, 172);
   color: white;
-  font-size: 24px;
+  font-size: 32px;
+  text-align: center;
+  padding-top: 100px;
+  padding-bottom: 100px;
   font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
 }
 
@@ -14,15 +17,16 @@
   margin-right: auto;
   width: 100%;
   float: left;
-  padding-left: 30px;
-  padding-right:30px;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(228, 255, 250);
   color: rgb(7, 46, 53);
-  font-size: 24px;
+  font-size: 32px;
+  text-align: center;
+  padding-top: 100px;
+  padding-bottom: 100px;
   font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
 }
 
-.headerbutton {
+.buttongrey {
   background-color: white;
   color: rgb(97, 97, 97);
   border: 2px solid #7ee4ce;
