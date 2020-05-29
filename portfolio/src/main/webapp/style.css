@@ -1,19 +1,23 @@
-#contentright {
+.contentdark {
   margin-left: auto;
   margin-right: auto;
   margin-top: 10px;
-  width: 50%;
+  width: 100%;
   float: right;
-  background-color: rgb(186, 235, 218);
+  background-color: rgb(3, 152, 172);
+  color: white;
 }
 
-#contentleft {
+.contentlight {
   margin-left: auto;
   margin-right: auto;
   margin-top: 10px;
-  width: 50%;
+  width: 100%;
   float: left;
-  background-color: rgb(164, 207, 231);
+  padding-left: 30px;
+  padding-right:30px;
+  background-color: rgb(255, 255, 255);
+  color: rgb(7, 46, 53);
   font-size: 24px;
   font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
 }
@@ -32,7 +36,7 @@
 #header {
   padding: 120px;
   text-align: center;
-  background: #bee4dc;
+  background: #d2e1ff;
   color: rgb(7, 46, 53);
   font-size: 40px;
   font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
