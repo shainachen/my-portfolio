@@ -4,7 +4,6 @@
   margin-top: 10px;
   width: 50%;
   float: right;
-  text-align: center;
   background-color: rgb(186, 235, 218);
 }
 
@@ -14,8 +13,9 @@
   margin-top: 10px;
   width: 50%;
   float: left;
-  text-align: center;
-  background-color: rgb(164, 207, 231)
+  background-color: rgb(164, 207, 231);
+  font-size: 24px;
+  font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
 }
 
 .headerbutton {
