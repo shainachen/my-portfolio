@@ -34,10 +34,16 @@
 .headerbutton:hover {background-color: #e7e7e7;}
 
 #header {
-  padding: 120px;
+  padding: 300px;
   text-align: center;
   background: #d2e1ff;
-  color: rgb(7, 46, 53);
+  background-image: url("images/Boat.JPG");
+  height: 500px;
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  color: rgb(255, 255, 255);
   font-size: 40px;
   font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
 }
