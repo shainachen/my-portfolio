@@ -48,7 +48,8 @@
   background-size: cover;
   position: relative;
   color: white;
-  text-shadow: 3px 3px rgb(56, 115, 112);
+  text-shadow: -1px 2px rgb(56, 115, 112), 1px 2px rgb(56,115,112),
+                1px -2px rgb(56,115,112), -1px -2px rgb(56,115,112);
   font-size: 40px;
   font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
 }
