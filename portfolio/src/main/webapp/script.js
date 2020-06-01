@@ -13,17 +13,17 @@
 // limitations under the License.
 
 /**
- * Adds a random greeting to the page.
+ * Adds a random fact to the page.
  */
-function addRandomGreeting() {
-  const greetings =
+function addRandomFact() {
+  const facts =
       ['I have been an extra in a movie before!', 'I was once allergic to peanut butter but got over it.', 
       'I can understand 3 languages but only speak 2', 'My email is my first name and my neighbor\'s dog\'s name'];
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+  // Pick a random fact.
+  const fact = facts[Math.floor(Math.random() * facts.length)];
 
   // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+  const factContainer = document.getElementById('fact-container');
+  factContainer.innerText = fact;
 }

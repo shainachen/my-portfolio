@@ -29,25 +29,26 @@
 .buttongrey {
   background-color: white;
   color: rgb(97, 97, 97);
-  border: 2px solid #7ee4ce;
+  border: 2px solid rgb(126, 228, 206);
   border-radius: 8px;
   padding: 15px 32px;
-  font-size: 32px;
+  font-size: 32px; 
 }
 
-.headerbutton:hover {background-color: #e7e7e7;}
+.headerbutton:hover {background-color: rgb(231, 231, 231);}
 
 #header {
   padding: 300px;
   text-align: center;
-  background: #d2e1ff;
+  background: rgb(210, 225, 255);
   background-image: url("images/Boat.JPG");
   height: 500px;
   background-position: top;
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
-  color: rgb(255, 255, 255);
+  color: white;
+  text-shadow: 3px 3px rgb(56, 115, 112);
   font-size: 40px;
   font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
 }
@@ -56,7 +57,7 @@
   text-align: right;  
 }
 
-#greeting-container {
+#fact-container {
   margin-top: 20px;
 }
 
@@ -102,15 +103,15 @@ li a {
   text-decoration: none;
   font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
   font-size:24px;
-  color: #213635 
+  color: rgb(33, 54, 53); 
 }
 
 li a:hover {
-  background-color: #457666;
+  background-color: rgb(69, 118, 102);
   color: white;
 }
 
 .active {
-  background-color: #51b2a5;
+  background-color: rgb(81, 178, 165);
   color: white;
 }
