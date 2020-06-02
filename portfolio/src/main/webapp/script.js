@@ -27,3 +27,9 @@ function addRandomFact() {
   const factContainer = document.getElementById('fact-container');
   factContainer.innerText = fact;
 }
+
+function getIntro() {
+  fetch('/data').then(response => response.text()).then((intro) => {
+    document.getElementById('introcontainer').innerText = intro;
+  });
+}
