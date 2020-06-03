@@ -36,9 +36,20 @@ function getIntro() {
 */
 
 function getMessages() {
-    fetch('/data').then(response => response.text()).then((messages) => {
-        console.log(messages);
-        const messagesContainer = document.getElementById('messagescontainer');
-        messagesContainer.innerHTML= messages;
-    });
+  fetch('/data').then(response => response.json()).then((messages) => {
+    console.log(messages);
+    console.log(messages[0]);
+    console.log(messages.length);
+    const messagesContainer = document.getElementById('messagescontainer');
+    messagesContainer.innerHTML= '';
+    for (i=0; i < messages.length; i++) {
+      messagesContainer.appendChild(createListElement(messages[i]));
+    }
+  });
+}
+
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }
