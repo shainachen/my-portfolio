@@ -27,19 +27,9 @@ function addRandomFact() {
   const factContainer = document.getElementById('fact-container');
   factContainer.innerText = fact;
 }
-/*
-function getIntro() {
-  fetch('/data').then(response => response.text()).then((intro) => {
-    document.getElementById('introcontainer').innerText = intro;
-  });
-}
-*/
 
 function getMessages() {
   fetch('/data').then(response => response.json()).then((messages) => {
-    console.log(messages);
-    console.log(messages[0]);
-    console.log(messages.length);
     const messagesContainer = document.getElementById('messagescontainer');
     messagesContainer.innerHTML= '';
     for (i=0; i < messages.length; i++) {
