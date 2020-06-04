@@ -13,7 +13,8 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -25,24 +26,21 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
-  private ArrayList<String> messages;
+  private List<String> messages;
 
   @Override
   public void init() {
-    messages = new ArrayList<>();
-    messages.add("Wowzers");
-    messages.add("Love those pictures");
-    messages.add("Yes I am commenting on my own website");
+    messages = Arrays.asList("Wow", "Love those pictures", "Yes I am commenting on my own website");
   }
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String json = convertToJsonUsingGson(messages);
     response.setContentType("application/json");
-    response.getWriter().println(json);
+    String message = convertToJsonUsingGson(messages);
+    response.getWriter().println(message);
   }
 
-   private String convertToJsonUsingGson(ArrayList messages) {
+   private String convertToJsonUsingGson(List messages) {
     Gson gson = new Gson();
     return gson.toJson(messages);
   }
