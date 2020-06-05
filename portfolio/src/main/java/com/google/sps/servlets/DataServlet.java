@@ -32,19 +32,46 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-
-  private List<String> messages;
-
-  @Override
-  public void init() {
-    messages = Arrays.asList("Wowzers", "Love those pictures", "Yes I am commenting on my own website");
-  }
-
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Query query = new Query("Comment");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    List<String> messages = new ArrayList();
+ 
+    for (Entity entity : datastore.prepare(query).asIterable()) {
+      String name = (String) entity.getProperty("nameText");
+      String comment = (String) entity.getProperty("commentText");
+      messages.add(name + ": " + comment);
+    }
+
     response.setContentType("application/json");
-    response.getWriter().println(convertToJsonUsingGson(messages));
+    String message = convertToJsonUsingGson(messages);
+    response.getWriter().println(message);
   }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String nameText = getParameter(request, "name-input", "No name");
+    String commentText = getParameter(request, "comment-input", "No comment");
+    Entity commentEntity = new Entity("Comment");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+ 
+    commentEntity.setProperty("nameText", nameText);
+    commentEntity.setProperty("commentText", commentText);
+    datastore.put(commentEntity);
+ 
+    response.sendRedirect("/index.html");
+  }
+
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
+  }
+
   private String convertToJsonUsingGson(List messages) {
     Gson gson = new Gson();
     return gson.toJson(messages);
