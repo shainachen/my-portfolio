@@ -18,18 +18,23 @@ public class DataServletTest {
   HttpServletRequest request;
   @Mock
   HttpServletResponse response;
+
+  private DataServlet dataServlet;
+  private StringWriter stringWriter;
+
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
+    dataServlet = new DataServlet();
+    dataServlet.init();
+    stringWriter = new StringWriter();
   }
   @Test
   public void testDataServlet_doGet_returnsHardcodedMessage() throws Exception {
-    StringWriter stringWriter = new StringWriter();
-
     when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
-    DataServlet dataServlet = new DataServlet();
     dataServlet.doGet(request, response);
-    String resultOfGet = stringWriter.getBuffer().toString().trim();
-    assertEquals(resultOfGet, new String("[\"Wowzers\",\"Love those pictures\",\"Yes I am commenting on my own website\"]"));
+
+    assertEquals(stringWriter.getBuffer().toString().trim(), 
+        new String("[\"Wowzers\",\"Love those pictures\",\"Yes I am commenting on my own website\"]"));
   }
 }
