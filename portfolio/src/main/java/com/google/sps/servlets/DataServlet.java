@@ -67,7 +67,7 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String nameText = getParameter(request, "name-input", "No name");
     String commentText = getParameter(request, "comment-input", "No comment");
-    Entity commentEntity = new Entity("Comment");
+    Entity commentEntity = new Entity("Comment", "portfolioComment");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
  
     commentEntity.setProperty("nameText", nameText);
