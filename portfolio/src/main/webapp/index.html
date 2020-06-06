@@ -59,11 +59,22 @@
       <a href="https://github.com/shainachen/Compleksion"><p>Complexshion: an app for personal acne tracking</p></a>
       <img width="200" src="images/MyProjectIcon.PNG">
     </div>
-    <div id="dataservletdisplay" class="contentdark">
-      <h1>DataServlet Demo</h1>
-      <p>Click the button to fetch messages!</p>
+    <div id="dataservlet" class="contentdark">
+      <h1>Comments</h1>
+      <label for="numberofcomments">Number of comments (between 1 and 10):</label>
+      <input type="number" id="numberofcomments" name="numberofcomments" min="1" max="10" value="10" onchange="getMessages()">
       <button class="buttongrey" onclick="getMessages()">Fetch messages!</button>
       <ul id="messagescontainer"></ul>
+    </div>
+    <div id="commentform" class="contentlight">
+      <h1>Comment Form</h1>
+      <form action="/data" method="POST">
+        <p>Enter your name:</p>
+        <textarea name="name-input"></textarea>
+        <p>Enter a comment:</p>
+        <textarea name="comment-input"></textarea>
+        <input type="submit" />
+    </form>
     </div>
     <div id="imagegallery" class="contentdark">
       <div class="row">

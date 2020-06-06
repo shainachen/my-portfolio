@@ -27,15 +27,38 @@ function addRandomFact() {
   const factContainer = document.getElementById('fact-container');
   factContainer.innerText = fact;
 }
-
-function getMessages() {
-  fetch('/data').then(response => response.json()).then((messages) => {
+/*
+function getMessages(value) {
+  console.log("regular get message");
+  fetch('/data?numberofcomments='+String(value)).then(response => response.json()).then((messages) => {
     const messagesContainer = document.getElementById('messagescontainer');
     messagesContainer.innerHTML= '';
     for (i=0; i < messages.length; i++) {
       messagesContainer.appendChild(createListElement(messages[i]));
     }
   });
+}
+*/
+
+function getMessages() {
+  const numComments = document.getElementById('numberofcomments').value;
+  console.log(numComments);
+  console.log('/data?numberofcomments='+String(numComments));
+  
+  fetch('/data?numberofcomments='+String(numComments)).
+  then(response => response.json()).then((messages) => {
+    const messageCount = document.getElementById('numberofcomments');
+    const messagesContainer = document.getElementById('messagescontainer');
+    messagesContainer.innerHTML= '';
+    for (i=0; i < messages.length; i++) {
+      messagesContainer.appendChild(createListElement(messages[i]));
+    }
+  });
+}
+
+function logValue(value) {
+    console.log("logging value");
+    console.log(value);
 }
 
 function createListElement(text) {

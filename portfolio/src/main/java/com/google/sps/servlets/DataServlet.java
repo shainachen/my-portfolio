@@ -35,14 +35,27 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    //NUMBER OF COMMENTS RESTRICTION
+    int numComments = getNumberOfCommentsToDisplay(request);
+
+    if (numComments == -1) {
+      response.setContentType("text/html");
+      response.getWriter().println("Please enter an integer between 1 and 10.");
+      return;
+    }
+    
     Query query = new Query("Comment");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     List<String> messages = new ArrayList();
- 
+    int numMessagesAdded = 0;
     for (Entity entity : datastore.prepare(query).asIterable()) {
       String name = (String) entity.getProperty("nameText");
       String comment = (String) entity.getProperty("commentText");
       messages.add(name + ": " + comment);
+      numMessagesAdded++;
+      if (numMessagesAdded >= numComments) {
+          break;
+      }
     }
 
     response.setContentType("application/json");
@@ -75,5 +88,18 @@ public class DataServlet extends HttpServlet {
   private String convertToJsonUsingGson(List messages) {
     Gson gson = new Gson();
     return gson.toJson(messages);
+  }
+
+  private int getNumberOfCommentsToDisplay(HttpServletRequest request) {
+    String numCommentsInput = request.getParameter("numberofcomments");
+    int numComments;
+
+    try {
+      numComments = Integer.parseInt(numCommentsInput);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int: " + numCommentsInput);
+      return -1;
+    }
+    return numComments;
   }
 }
