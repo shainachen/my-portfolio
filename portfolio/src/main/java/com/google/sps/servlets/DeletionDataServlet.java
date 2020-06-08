@@ -41,9 +41,8 @@ public class DeletionDataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     for (Entity entity : datastore.prepare(new Query("Comment")).asIterable()) {
-      String name = (String) entity.getProperty("nameText");
-      String comment = (String) entity.getProperty("commentText");
-      datastore.delete(KeyFactory.createKey("Comment", name+comment));
+      datastore.delete(KeyFactory.createKey("Comment", 
+        (String) entity.getProperty("nameText") + (String) entity.getProperty("commentText")));
     }
     response.sendRedirect("/index.html");
   }
