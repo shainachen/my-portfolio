@@ -29,13 +29,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+/**Servlet for fetching and posting comments**/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //NUMBER OF COMMENTS RESTRICTION
     int numComments = getNumberOfCommentsToDisplay(request);
 
     if (numComments == -1) {
@@ -44,11 +43,9 @@ public class DataServlet extends HttpServlet {
       return;
     }
     
-    Query query = new Query("Comment");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     List<String> messages = new ArrayList();
     int numMessagesAdded = 0;
-    for (Entity entity : datastore.prepare(query).asIterable()) {
+    for (Entity entity : DatastoreServiceFactory.getDatastoreService().prepare(new Query("Comment")).asIterable()) {
       String name = (String) entity.getProperty("nameText");
       String comment = (String) entity.getProperty("commentText");
       messages.add(name + ": " + comment);
@@ -59,20 +56,18 @@ public class DataServlet extends HttpServlet {
     }
 
     response.setContentType("application/json");
-    String message = convertToJsonUsingGson(messages);
-    response.getWriter().println(message);
+    response.getWriter().println(convertToJsonUsingGson(messages));
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String nameText = getParameter(request, "name-input", "No name");
     String commentText = getParameter(request, "comment-input", "No comment");
-    Entity commentEntity = new Entity("Comment", "portfolioComment");
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity commentEntity = new Entity("Comment", nameText+commentText);
  
     commentEntity.setProperty("nameText", nameText);
     commentEntity.setProperty("commentText", commentText);
-    datastore.put(commentEntity);
+    DatastoreServiceFactory.getDatastoreService().put(commentEntity);
  
     response.sendRedirect("/index.html");
   }

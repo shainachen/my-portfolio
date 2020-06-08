@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package com.google.sps.servlets;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -32,20 +33,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
+/**Servlet for deleting all comments**/
 @WebServlet("/delete-data")
 public class DeletionDataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(KeyFactory.stringToKey("portfolioComment"));
-  }
-
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("Deletion success");
+    for (Entity entity : datastore.prepare(new Query("Comment")).asIterable()) {
+      String name = (String) entity.getProperty("nameText");
+      String comment = (String) entity.getProperty("commentText");
+      datastore.delete(KeyFactory.createKey("Comment", name+comment));
+    }
+    response.sendRedirect("/index.html");
   }
 }
