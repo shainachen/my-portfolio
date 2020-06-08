@@ -82,7 +82,7 @@ img {
   vertical-align: middle;
 }
 
-ul {
+#navbarul {
   list-style-type: none;
   margin: 0 auto;
   padding-left: 0px;
@@ -93,8 +93,12 @@ ul {
   width: 100%;
 }
 
-li {
+.navbarli {
   float: left;
+}
+
+ul {
+  list-style-position: inside;
 }
 
 li a {

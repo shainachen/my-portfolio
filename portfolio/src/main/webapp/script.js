@@ -28,8 +28,18 @@ function addRandomFact() {
   factContainer.innerText = fact;
 }
 
-function getIntro() {
-  fetch('/data').then(response => response.text()).then((intro) => {
-    document.getElementById('introcontainer').innerText = intro;
+function getMessages() {
+  fetch('/data').then(response => response.json()).then((messages) => {
+    const messagesContainer = document.getElementById('messagescontainer');
+    messagesContainer.innerHTML= '';
+    for (i=0; i < messages.length; i++) {
+      messagesContainer.appendChild(createListElement(messages[i]));
+    }
   });
+}
+
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }
