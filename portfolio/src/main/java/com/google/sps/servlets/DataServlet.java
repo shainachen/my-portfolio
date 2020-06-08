@@ -36,10 +36,10 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     int numComments = getNumberOfCommentsToDisplay(request);
-    List<String> messages = new ArrayList();
+    List<String> comments = new ArrayList();
     int numCommentsAdded = 0;
     for (Entity entity : DatastoreServiceFactory.getDatastoreService().prepare(new Query("Comment")).asIterable()) {
-      messages.add((String) entity.getProperty("nameText") + ": " + (String) entity.getProperty("commentText"));
+      comments.add((String) entity.getProperty("nameText") + ": " + (String) entity.getProperty("commentText"));
       numCommentsAdded++;
       if (numCommentsAdded >= numComments) {
           break;
@@ -47,7 +47,7 @@ public class DataServlet extends HttpServlet {
     }
 
     response.setContentType("application/json");
-    response.getWriter().println(convertToJsonUsingGson(messages));
+    response.getWriter().println(convertToJsonUsingGson(comments));
   }
 
   @Override
@@ -71,9 +71,9 @@ public class DataServlet extends HttpServlet {
     return value;
   }
 
-  private String convertToJsonUsingGson(List messages) {
+  private String convertToJsonUsingGson(List comments) {
     Gson gson = new Gson();
-    return gson.toJson(messages);
+    return gson.toJson(comments);
   }
   
   private int getNumberOfCommentsToDisplay(HttpServletRequest request) {

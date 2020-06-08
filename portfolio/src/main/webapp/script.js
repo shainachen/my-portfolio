@@ -33,11 +33,11 @@ function addRandomFact() {
  */
 function getComments() {  
   fetch('/data?numberofcomments='+String(document.getElementById('numberofcomments').value)).
-  then(response => response.json()).then((messages) => {
-    const messagesContainer = document.getElementById('messagescontainer');
-    messagesContainer.innerHTML= '';
-    for (i=0; i < messages.length; i++) {
-      messagesContainer.appendChild(createListElement(messages[i]));
+  then(response => response.json()).then((comments) => {
+    const commentsContainer = document.getElementById('commentscontainer');
+    commentsContainer.innerHTML= '';
+    for (i=0; i < comments.length; i++) {
+      commentsContainer.appendChild(createListElement(comments[i]));
     }
   });
 }

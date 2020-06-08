@@ -51,7 +51,7 @@ public class DataServletTest {
   }
 
   @Test
-  public void testDataServlet_doGet_returnsSingleMessage() throws Exception {
+  public void testDataServlet_doGet_returnsSingleComment() throws Exception {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     String nameText = "Bob";
     String commentText = "Nice";
@@ -68,7 +68,7 @@ public class DataServletTest {
   }
 
   @Test
-  public void testDataServlet_doGet_returnsMultipleMessages() throws Exception {
+  public void testDataServlet_doGet_returnsMultipleComments() throws Exception {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
     String nameText1 = "Bob";
     String commentText1 = "Nice";
