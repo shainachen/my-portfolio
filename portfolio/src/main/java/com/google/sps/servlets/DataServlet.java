@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**Servlet for fetching and posting comments**/
+/** Servlet that fetches and posts comments **/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
@@ -84,7 +84,6 @@ public class DataServlet extends HttpServlet {
     Gson gson = new Gson();
     return gson.toJson(messages);
   }
-
   private int getNumberOfCommentsToDisplay(HttpServletRequest request) {
     String numCommentsInput = request.getParameter("numberofcomments");
     int numComments;
