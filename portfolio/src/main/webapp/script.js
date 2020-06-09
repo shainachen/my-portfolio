@@ -29,10 +29,10 @@ function addRandomFact() {
 }
 
 /**
- * Gets comments from datastore
+ * Gets comments from server.
  */
 function getComments() {  
-  fetch('/data?numberofcomments='+String(document.getElementById('numberofcomments').value)).
+  fetch('/add-comments?numberofcomments='+String(document.getElementById('numberofcomments').value)).
   then(response => response.json()).then((comments) => {
     const commentsContainer = document.getElementById('commentscontainer');
     commentsContainer.innerHTML= '';
@@ -43,7 +43,7 @@ function getComments() {
 }
 
 /**
- * Creates single list element for HTML list
+ * Creates single list element for HTML list.
  */
 function createListElement(text) {
   const liElement = document.createElement('li');
