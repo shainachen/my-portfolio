@@ -89,4 +89,15 @@ public class DataServletTest {
     assertEquals(stringWriter.getBuffer().toString().trim(), 
         new String("[\"Bob: Nice\",\"Sally: This is a test comment\"]"));
   }
+
+  @Test
+  public void testDataServlet_doPost_postsSingleComment() throws Exception {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    when(request.getParameter("name-input")).thenReturn("Alice");
+    when(request.getParameter("comment-input")).thenReturn("My comment");
+
+    dataServlet.doPost(request, response);
+    
+    assertEquals(1, ds.prepare(new Query("Comment")).countEntities(withLimit(10)));
+  }
 }
