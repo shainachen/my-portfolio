@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that fetches and posts comments **/
-@WebServlet("/data")
+@WebServlet("/add-comments")
 public class DataServlet extends HttpServlet {
   
   @Override
@@ -39,7 +40,7 @@ public class DataServlet extends HttpServlet {
     List<String> comments = new ArrayList();
     int numCommentsAdded = 0;
     for (Entity entity : DatastoreServiceFactory.getDatastoreService().prepare(new Query("Comment")).asIterable()) {
-      comments.add((String) entity.getProperty("nameText") + ": " + (String) entity.getProperty("commentText"));
+      comments.add(String.format("%s: %s",entity.getProperty("nameText"), entity.getProperty("commentText")));
       numCommentsAdded++;
       if (numCommentsAdded >= numComments) {
           break;
@@ -52,40 +53,22 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String nameText = getParameter(request, "name-input", "No name");
-    String commentText = getParameter(request, "comment-input", "No comment");
-    Entity commentEntity = new Entity("Comment", nameText+commentText);
- 
-    commentEntity.setProperty("nameText", nameText);
-    commentEntity.setProperty("commentText", commentText);
-    DatastoreServiceFactory.getDatastoreService().put(commentEntity);
- 
-    response.sendRedirect("/index.html");
-  }
-
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
-    String value = request.getParameter(name);
-    if (value == null) {
-      return defaultValue;
+    Optional<String> commentText = Optional.ofNullable(request.getParameter("comment-input"));
+    if (commentText.isPresent()) {
+      Entity commentEntity = new Entity("Comment");
+      commentEntity.setProperty("nameText", Optional.ofNullable(request.getParameter("name-input")).orElse("Anonymous"));
+      commentEntity.setProperty("commentText", commentText.get());
+      DatastoreServiceFactory.getDatastoreService().put(commentEntity);
     }
-    return value;
+    response.sendRedirect("/index.html");        
   }
 
-  private String convertToJsonUsingGson(List comments) {
+  private String convertToJsonUsingGson(List data) {
     Gson gson = new Gson();
-    return gson.toJson(comments);
+    return gson.toJson(data);
   }
   
   private int getNumberOfCommentsToDisplay(HttpServletRequest request) {
-    String numCommentsInput = request.getParameter("numberofcomments");
-    int numComments;
-
-    try {
-      numComments = Integer.parseInt(numCommentsInput);
-    } catch (NumberFormatException e) {
-      System.err.println("Could not convert to int: " + numCommentsInput);
-      return 10;
-    }
-    return numComments;
+    return Integer.parseInt(request.getParameter("numberofcomments"));
   }
 }

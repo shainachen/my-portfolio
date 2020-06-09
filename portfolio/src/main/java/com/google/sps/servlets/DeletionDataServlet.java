@@ -32,17 +32,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-/**Servlet for deleting all comments**/
-@WebServlet("/delete-data")
+import javax.servlet.ServletException;
+/* Servlet for deleting all comments */
+@WebServlet("/delete-all-comments")
 public class DeletionDataServlet extends HttpServlet {
+  private DatastoreService datastore;
+  @Override
+  public void init() throws ServletException {
+    datastore = DatastoreServiceFactory.getDatastoreService();
+  }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     for (Entity entity : datastore.prepare(new Query("Comment")).asIterable()) {
-      datastore.delete(KeyFactory.createKey("Comment", 
-        (String) entity.getProperty("nameText") + (String) entity.getProperty("commentText")));
+      datastore.delete(entity.getKey());
     }
     response.sendRedirect("/index.html");
   }
