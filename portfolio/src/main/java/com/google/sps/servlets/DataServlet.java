@@ -14,6 +14,14 @@
 
 package com.google.sps.servlets;
 
+import static com.google.sps.Constants.COMMENT_ENTITY_NAME;
+import static com.google.sps.Constants.COMMENT_NAME_ID;
+import static com.google.sps.Constants.COMMENT_TEXT_ID;
+import static com.google.sps.Constants.REQUEST_NAME_PARAM;
+import static com.google.sps.Constants.REQUEST_COMMENT_PARAM;
+import static com.google.sps.Constants.REQUEST_NUMCOMMENTS_PARAM;
+import static com.google.sps.Constants.INDEX_URL;
+
 import com.google.sps.CommentEntity;
 import com.google.sps.Comments;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -32,18 +40,25 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+
 
 /** Servlet that fetches and posts comments **/
 @WebServlet("/add-comments")
 public class DataServlet extends HttpServlet {
+  private DatastoreService datastore;
+  @Override
+  public void init() throws ServletException {
+    datastore = DatastoreServiceFactory.getDatastoreService();
+  }
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     int numComments = getNumberOfCommentsToDisplay(request);
     List<String> comments = new ArrayList();
     int numCommentsAdded = 0;
-    for (Entity entity : DatastoreServiceFactory.getDatastoreService().prepare(new Query("Comment")).asIterable()) {
-      comments.add(String.format("%s: %s",entity.getProperty("nameText"), entity.getProperty("commentText")));
+    for (Entity entity : datastore.prepare(new Query(COMMENT_ENTITY_NAME)).asIterable()) {
+      comments.add(String.format("%s: %s",entity.getProperty(COMMENT_NAME_ID), entity.getProperty(COMMENT_TEXT_ID)));
       numCommentsAdded++;
       if (numCommentsAdded >= numComments) {
           break;
@@ -56,14 +71,13 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Optional<String> commentText = Optional.ofNullable(request.getParameter("comment-input"));
+    Optional<String> commentText = Optional.ofNullable(request.getParameter(REQUEST_COMMENT_PARAM));
     if (commentText.isPresent()) {
-      Entity commentEntity = new Entity("Comment");
-      commentEntity.setProperty("nameText", Optional.ofNullable(request.getParameter("name-input")).orElse("Anonymous"));
-      commentEntity.setProperty("commentText", commentText.get());
-      DatastoreServiceFactory.getDatastoreService().put(commentEntity);
+      CommentEntity comment = new CommentEntity(/*name*/ request.getParameter(REQUEST_NAME_PARAM),
+      /*comment*/ commentText.get());
+      datastore.put(comment.getEntity());
     }
-    response.sendRedirect("/index.html");        
+    response.sendRedirect(INDEX_URL);        
   }
 
   private String convertToJsonUsingGson(List data) {
@@ -72,6 +86,6 @@ public class DataServlet extends HttpServlet {
   }
   
   private int getNumberOfCommentsToDisplay(HttpServletRequest request) {
-    return Integer.parseInt(request.getParameter("numberofcomments"));
+    return Integer.parseInt(request.getParameter(REQUEST_NUMCOMMENTS_PARAM));
   }
 }

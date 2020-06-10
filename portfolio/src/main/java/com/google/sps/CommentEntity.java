@@ -12,7 +12,7 @@ public class CommentEntity {
   private Entity entity;
 
   public CommentEntity(String name, String commentText) {
-    this.entity = new Entity(COMMENT_ENTITY_NAME, name + ": " + commentText);
+    this.entity = new Entity(COMMENT_ENTITY_NAME);
     this.entity.setProperty(COMMENT_NAME_ID, name);
     this.entity.setProperty(COMMENT_TEXT_ID, commentText);
   }
