@@ -4,6 +4,9 @@ import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+import com.google.sps.CommentEntity;
+import com.google.sps.Comments;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -24,6 +27,7 @@ import org.junit.Before;
 import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import java.util.List;
 
 @RunWith(JUnit4.class)
 public class DataServletTest {
@@ -33,7 +37,7 @@ public class DataServletTest {
 
   private DataServlet dataServlet;
   private StringWriter stringWriter;
-  private final LocalServiceTestHelper helper =
+  private final LocalServiceTestHelper datastoreConfiguration =
       new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
   @Before
@@ -42,52 +46,63 @@ public class DataServletTest {
     dataServlet = new DataServlet();
     dataServlet.init();
     stringWriter = new StringWriter();
-    helper.setUp();
+    datastoreConfiguration.setUp();
   }
 
   @After
   public void tearDown() {
-    helper.tearDown();
+    datastoreConfiguration.tearDown();
   }
 
   @Test
   public void testDataServlet_doGet_returnsSingleComment() throws Exception {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    String nameText = "Bob";
-    String commentText = "Nice";
-    Entity comment = new Entity("Comment", nameText + ": " + commentText);
-    comment.setProperty("nameText", nameText);
-    comment.setProperty("commentText", commentText);
-    ds.put(comment);
-    
+    CommentEntity comment = new CommentEntity("Bob", "Nice");
+    ds.put(comment.getEntity());
+    when(request.getParameter("numberofcomments")).thenReturn("5");
     when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
+    
     dataServlet.doGet(request, response);
 
-    assertEquals(stringWriter.getBuffer().toString().trim(), 
-        new String("[\"Bob: Nice\"]"));
+    assertEquals(stringWriter.getBuffer().toString().trim(), "[\"Bob: Nice\"]");
+  }
+
+  @Test
+  public void testDataServlet_doGet_returnsNoComment() throws Exception {
+    when(request.getParameter("numberofcomments")).thenReturn("10");
+    when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
+    
+    dataServlet.doGet(request, response);
+
+    assertEquals(stringWriter.getBuffer().toString().trim(), "[]");
+  }
+
+  @Test
+  public void testDataServlet_doGet_returnsCommentByUsingDefaultCommentNumberWithIllegalParameterSpecification() throws Exception {
+    DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    CommentEntity comment = new CommentEntity("Bob", "Nice");
+    ds.put(comment.getEntity());
+    when(request.getParameter("numberofcomments")).thenReturn("0");
+    when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
+    
+    dataServlet.doGet(request, response);
+
+    assertEquals(stringWriter.getBuffer().toString().trim(), "[\"Bob: Nice\"]");
   }
 
   @Test
   public void testDataServlet_doGet_returnsMultipleComments() throws Exception {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-    String nameText1 = "Bob";
-    String commentText1 = "Nice";
-    Entity comment1 = new Entity("Comment", nameText1 + ": " + commentText1);
-    comment1.setProperty("nameText", nameText1);
-    comment1.setProperty("commentText", commentText1);
-    ds.put(comment1);
-    String nameText2 = "Sally";
-    String commentText2 = "This is a test comment";
-    Entity comment2 = new Entity("Comment", nameText2 + ": " + commentText2);
-    comment2.setProperty("nameText", nameText2);
-    comment2.setProperty("commentText", commentText2);
-    ds.put(comment2);
-    
+    CommentEntity comment1 = new CommentEntity("Bob", "Nice");
+    CommentEntity comment2 = new CommentEntity("Sally", "This is a test comment");
+    ds.put(comment1.getEntity());
+    ds.put(comment2.getEntity());
+    when(request.getParameter("numberofcomments")).thenReturn("5");
     when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
+    
     dataServlet.doGet(request, response);
 
-    assertEquals(stringWriter.getBuffer().toString().trim(), 
-        new String("[\"Bob: Nice\",\"Sally: This is a test comment\"]"));
+    assertEquals(stringWriter.getBuffer().toString().trim(), "[\"Bob: Nice\",\"Sally: This is a test comment\"]");
   }
 
   @Test
@@ -98,6 +113,9 @@ public class DataServletTest {
 
     dataServlet.doPost(request, response);
     
-    assertEquals(1, ds.prepare(new Query("Comment")).countEntities(withLimit(10)));
+    List<Entity> results = ds.prepare(new Query("Comment")).asList(FetchOptions.Builder.withDefaults());
+    assertEquals(1, results.size());
+    assertEquals("Alice", results.get(0).getProperty("nameText"));
+    assertEquals("My comment", results.get(0).getProperty("commentText"));
   }
 }

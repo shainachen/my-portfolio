@@ -14,6 +14,10 @@
 
 package com.google.sps.servlets;
 
+import static com.google.sps.Constants.COMMENT_ENTITY_NAME;
+import static com.google.sps.Constants.INDEX_URL;
+
+import com.google.sps.CommentEntity;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -44,9 +48,9 @@ public class DeletionDataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    for (Entity entity : datastore.prepare(new Query("Comment")).asIterable()) {
+    for (Entity entity : datastore.prepare(new Query(COMMENT_ENTITY_NAME)).asIterable()) {
       datastore.delete(entity.getKey());
     }
-    response.sendRedirect("/index.html");
+    response.sendRedirect(INDEX_URL);
   }
 }
