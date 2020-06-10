@@ -11,7 +11,6 @@ import static com.google.sps.Constants.REQUEST_COMMENT_PARAM;
 import static com.google.sps.Constants.REQUEST_NUMCOMMENTS_PARAM;
 
 import com.google.sps.CommentEntity;
-import com.google.sps.Comments;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
