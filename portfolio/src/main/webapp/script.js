@@ -13,11 +13,35 @@
 // limitations under the License.
 
 google.charts.load('current', {
-  'packages': ['corechart', 'orgchart']
+  'packages': ['corechart', 'orgchart', 'geochart'],
+  'mapsApiKey': 'MY_API_KEY'
 });
 google.charts.setOnLoadCallback(drawPieChart);
 google.charts.setOnLoadCallback(drawOrgChart);
+google.charts.setOnLoadCallback(drawRegionsMap);
 
+/** Creates a region map */
+function drawRegionsMap() {
+  const data = google.visualization.arrayToDataTable([
+    ['Country', 'Population (millions)'],
+    ['China', 1394],
+    ['India', 1326],
+    ['United States', 332],
+    ['Indonesia', 267],
+    ['Pakistan', 233],
+    ['Brazil', 211],
+    ['Russia', 141],
+    ['Mexico', 128],
+    ['Canada', 37],
+  ]);
+
+  const options = {
+    colorAxis: {colors: ['rgb(228, 255, 250)', 'rgb(126, 228, 206)', 'rgb(70, 159, 150)']},
+  };
+
+  const chart = new google.visualization.GeoChart(document.getElementById('regionsmap'));
+  chart.draw(data, options);
+}
 /** Creates a chart and adds it to the page. */
 function drawPieChart() {
   const data = new google.visualization.DataTable();

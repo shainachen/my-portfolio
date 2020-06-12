@@ -54,6 +54,11 @@
   font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
 }
 
+#regionsmap {
+  width: 100%;
+  height: 500px;
+}
+
 #sidebarlink {
   text-align: right;  
 }
