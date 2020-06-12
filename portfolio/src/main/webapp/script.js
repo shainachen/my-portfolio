@@ -39,7 +39,7 @@ function drawPieChart() {
 }
 
  function drawOrgChart() {
-        var data = new google.visualization.DataTable();
+        var data = new google.visuali44zation.DataTable();
         data.addColumn('string', 'Name');
         data.addColumn('string', 'Parent');
         data.addColumn('string', 'Tooltip');
