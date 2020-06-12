@@ -120,3 +120,9 @@ li a:hover {
   background-color: rgb(81, 178, 165);
   color: white;
 }
+
+#map {
+  border: thin solid black;
+  height: 750px;
+  width: 750px;
+}

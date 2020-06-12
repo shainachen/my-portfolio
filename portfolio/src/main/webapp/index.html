@@ -5,6 +5,9 @@
     <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
+    <script async defer    
+    src="https://maps.googleapis.com/maps/api/js?key=MY_API_KEY&callback=createMap">
+    </script>
   </head>
   <body>
     <div id="header">
@@ -27,6 +30,7 @@
         <li class="navbarli"><a href="#imagegallery">Photos</a></li>
       </ul>
     </div>
+    <div id="map" class="contentlight"></div>
     <div id="story" class="contentdark">
       <h1>My story</h1>
       <p>For 19 years, the thing I have loved doing the most is creating.</p>
@@ -35,20 +39,20 @@
       <p>At 12, it was baking.</p>
       <p>At 14, I discovered how to mess with some computer settings on my dad's laptop.</p>
       <p>The rest is history.</p>
-      <img width="200" src="images/MyStoryIcon.PNG">
+      <img width="200" src="images/iconImages/MyStoryIcon.PNG">
     </div>
     <div id="background" class="contentlight">
       <h1>My background</h1>
       <p>I study computer science at UC Berkeley.</p>
       <p>Go bears!!!</p>
-      <img width="200" src="images/MyBackgroundIcon.PNG">
+      <img width="200" src="images/iconImages/MyBackgroundIcon.PNG">
     </div>
     <div id="life" class="contentdark">
       <h1>My life</h1>
       <p>Take a look at some random facts about me:</p>
       <button class="buttongrey" onclick="addRandomFact()">Generate Random Fact</button>
       <div id="fact-container"></div>
-      <img width="200" src="images/MyLifeIcon.PNG">
+      <img width="200" src="images/iconImages/MyLifeIcon.PNG">
     </div>
     <div id="projects" class="contentlight">
       <h1>My projects</h1>
@@ -57,7 +61,7 @@
           Cosmix: an app for collaborative playlists
       </a>
       <a href="https://github.com/shainachen/Compleksion"><p>Complexshion: an app for personal acne tracking</p></a>
-      <img width="200" src="images/MyProjectIcon.PNG">
+      <img width="200" src="images/iconImages/MyProjectIcon.PNG">
     </div>
     <div id="dataservlet" class="contentdark">
       <h1>Comments</h1>
@@ -82,19 +86,19 @@
     <div id="imagegallery" class="contentdark">
       <div class="row">
         <div class="col">
-          <img src="images/Cake.JPG">
-          <img src="images/Stadium.JPG">
-          <img src="images/Gatsby.JPG">
+          <img src="images/galleryImages/Cake.JPG">
+          <img src="images/galleryImages/Stadium.JPG">
+          <img src="images/galleryImages/Gatsby.JPG">
         </div>
         <div class="col">
-          <img src="images/Giants.JPG">
-          <img src="images/Headshot.JPG">
-          <img src="images/HorseRide.JPG">
+          <img src="images/galleryImages/Giants.JPG">
+          <img src="images/galleryImages/Headshot.JPG">
+          <img src="images/galleryImages/HorseRide.JPG">
         </div>
         <div class="col">
-          <img src="images/Garden.JPG">
-          <img src="images/Bridge.JPG">
-          <img src="images/Berkeley.JPG">
+          <img src="images/galleryImages/Garden.JPG">
+          <img src="images/galleryImages/Bridge.JPG">
+          <img src="images/galleryImages/Berkeley.JPG">
         </div>
       </div>
     </div>
