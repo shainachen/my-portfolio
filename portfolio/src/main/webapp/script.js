@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-google.charts.load('current', {'packages':['corechart', 'orgchart']});
+google.charts.load('current', {
+  'packages': ['corechart', 'orgchart']
+});
 google.charts.setOnLoadCallback(drawPieChart);
 google.charts.setOnLoadCallback(drawOrgChart);
 
@@ -21,44 +23,58 @@ function drawPieChart() {
   const data = new google.visualization.DataTable();
   data.addColumn('string', 'Cities');
   data.addColumn('number', 'Years');
-        data.addRows([
-          ['Berkeley', 2],
-          ['Shanghai', 1],
-          ['Sunnyvale', 17]
-        ]);
+  data.addRows([
+    ['Berkeley', 2],
+    ['Shanghai', 1],
+    ['Sunnyvale', 17]
+  ]);
 
   const options = {
     'title': 'Years spent at cities',
-    'width':500,
-    'height':400
+    'width': 500,
+    'height': 400
   };
 
   const chart = new google.visualization.PieChart(
-      document.getElementById('piechart'));
+    document.getElementById('piechart'));
   chart.draw(data, options);
 }
 
- function drawOrgChart() {
-        var data = new google.visuali44zation.DataTable();
-        data.addColumn('string', 'Name');
-        data.addColumn('string', 'Parent');
-        data.addColumn('string', 'Tooltip');
+function drawOrgChart() {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Name');
+  data.addColumn('string', 'Parent');
+  data.addColumn('string', 'Tooltip');
 
-        data.addRows([
-          [{'v':'Mother', 'f':'Mother<div style="color:blue; font-style:italic">CEO</div>'},
-           '', 'The CEO'],
-          [{'v':'Clique', 'f':'Clique<div style="color:blue; font-style:italic">Terrific Trio</div>'},
-           'Mother', ''],
-          ['Cindy', 'Clique', 'Friend'],
-          ['Shaina', 'Clique', 'Creator of this site'],
-          ['Shivani', 'Clique', 'Friend']
-        ]);
+  data.addRows([
+    [ /* nodeID= */ {
+        'v': 'Mother',
+        'f': 'Mother<div style="color:blue; font-style:italic">CEO</div>'
+      },
+      /* parentID= */
+      '',
+      /* tooltipText= */
+      'The CEO'
+    ],
+    [ /* nodeID= */ {
+        'v': 'Clique',
+        'f': 'Clique<div style="color:blue; font-style:italic">Terrific Trio</div>'
+      },
+      /* parentID= */
+      'Mother',
+      /* tooltipText= */
+      ''
+    ],
+    [ /* nodeID= */ 'Cindy', /* parentID= */ 'Clique', /* tooltipText= */ 'Friend'],
+    [ /* nodeID= */ 'Shaina', /* parentID= */ 'Clique', /* tooltipText= */ 'Creator of this site'],
+    [ /* nodeID= */ 'Shivani', /* parentID= */ 'Clique', /* tooltipText= */ 'Friend']
+  ]);
 
-        // Create the chart.
-        var chart = new google.visualization.OrgChart(document.getElementById('orgchart'));
-        // Draw the chart, setting the allowHtml option to true for the tooltips.
-        chart.draw(data, {'allowHtml':true});
-      }
+  const chart = new google.visualization.OrgChart(document.getElementById('orgchart'));
+  chart.draw(data, {
+    'allowHtml': true
+  });
+}
 
 /** Creates a map and adds it to the page. */
 function createMap() {
