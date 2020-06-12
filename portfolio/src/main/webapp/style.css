@@ -82,14 +82,6 @@ img {
   vertical-align: middle;
 }
 
-#piechart {
-  float:right;
-}
-
-#orgchart {
-  float:left;
-}
-
 #navbarul {
   list-style-type: none;
   margin: 0 auto;
