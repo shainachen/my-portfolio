@@ -4,7 +4,6 @@ import static com.google.sps.Constants.COMMENT_ENTITY_NAME;
 import static com.google.sps.Constants.COMMENT_NAME_ID;
 import static com.google.sps.Constants.COMMENT_TEXT_ID;
 
-
 import com.google.appengine.api.datastore.Entity;
 
 /* A comment made by a user */
