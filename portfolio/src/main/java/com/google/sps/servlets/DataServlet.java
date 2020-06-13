@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps;
 
 import static com.google.sps.Constants.COMMENT_ENTITY_NAME;
 import static com.google.sps.Constants.COMMENT_NAME_ID;
@@ -71,8 +71,8 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> commentText = Optional.ofNullable(request.getParameter(REQUEST_COMMENT_PARAM));
     if (commentText.isPresent()) {
-      CommentEntity comment = new CommentEntity(request.getParameter(REQUEST_NAME_PARAM), commentText.get());
-      datastore.put(comment.getEntity());
+      CommentEntity comment = CommentEntity.create(request.getParameter(REQUEST_NAME_PARAM), commentText.get());
+      datastore.put(comment.toEntity());
     }
     response.sendRedirect(INDEX_URL);        
   }

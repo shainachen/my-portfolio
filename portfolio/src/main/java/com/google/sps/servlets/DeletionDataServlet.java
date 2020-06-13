@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps;
 
 import static com.google.sps.Constants.COMMENT_ENTITY_NAME;
 import static com.google.sps.Constants.INDEX_URL;
