@@ -71,7 +71,11 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> commentText = Optional.ofNullable(request.getParameter(REQUEST_COMMENT_PARAM));
     if (commentText.isPresent()) {
-      CommentEntity comment = CommentEntity.create(request.getParameter(REQUEST_NAME_PARAM), commentText.get());
+      String name = request.getParameter(REQUEST_NAME_PARAM);
+      if (name.equals("")) {
+        name = "Anonymous";
+      }
+      CommentEntity comment = CommentEntity.create(name, commentText.get());
       datastore.put(comment.toEntity());
     }
     response.sendRedirect(INDEX_URL);        

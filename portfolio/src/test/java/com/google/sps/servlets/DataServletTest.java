@@ -140,14 +140,14 @@ public class DataServletTest {
   public void testDataServlet_doPost_postsAnonymousSingleComment() throws Exception {
     String commentName = "";
     String commentText = "My comment";
-    when(request.getParameter(REQUEST_NAME_PARAM)).thenReturn(commentName);
+   when(request.getParameter(REQUEST_NAME_PARAM)).thenReturn(commentName);
     when(request.getParameter(REQUEST_COMMENT_PARAM)).thenReturn(commentText);
  
     dataServlet.doPost(request, response);
     
     List<Entity> results = ds.prepare(new Query(COMMENT_ENTITY_NAME)).asList(FetchOptions.Builder.withDefaults());
     assertEquals(1, results.size());
-    assertEquals(commentName, results.get(0).getProperty(COMMENT_NAME_ID));
+    assertEquals("Anonymous", results.get(0).getProperty(COMMENT_NAME_ID));
     assertEquals(commentText, results.get(0).getProperty(COMMENT_TEXT_ID));
   }
  
