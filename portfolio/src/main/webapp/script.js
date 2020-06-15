@@ -20,7 +20,7 @@ google.charts.setOnLoadCallback(drawPieChart);
 google.charts.setOnLoadCallback(drawOrgChart);
 google.charts.setOnLoadCallback(drawRegionsMap);
 
-/** Creates a region map */
+/** Creates a region map of populations by country and adds it to the page. */
 function drawRegionsMap() {
   const data = google.visualization.arrayToDataTable([
     ['Country', 'Population (millions)'],
@@ -42,7 +42,8 @@ function drawRegionsMap() {
   const chart = new google.visualization.GeoChart(document.getElementById('regionsmap'));
   chart.draw(data, options);
 }
-/** Creates a chart and adds it to the page. */
+
+/** Creates a pie chart of years I've spent in cities and adds it to the page. */
 function drawPieChart() {
   const data = new google.visualization.DataTable();
   data.addColumn('string', 'Cities');
@@ -64,6 +65,7 @@ function drawPieChart() {
   chart.draw(data, options);
 }
 
+/** Creates an organizational chart and adds it to the page. */
 function drawOrgChart() {
   const data = new google.visualization.DataTable();
   data.addColumn('string', 'Name');
@@ -71,24 +73,12 @@ function drawOrgChart() {
   data.addColumn('string', 'Tooltip');
 
   data.addRows([
-    [ /* nodeID= */ {
-        'v': 'Mother',
-        'f': 'Mother<div style="color:blue; font-style:italic">CEO</div>'
-      },
-      /* parentID= */
-      '',
-      /* tooltipText= */
-      'The CEO'
-    ],
-    [ /* nodeID= */ {
-        'v': 'Clique',
-        'f': 'Clique<div style="color:blue; font-style:italic">Terrific Trio</div>'
-      },
-      /* parentID= */
-      'Mother',
-      /* tooltipText= */
-      ''
-    ],
+    [ /* nodeID= */ {'v': 'Mother', 'f': 'Mother<div style="color:blue; font-style:italic">CEO</div>'},
+      /* parentID= */ '',
+      /* tooltipText= */ 'The CEO'],
+    [ /* nodeID= */ {'v': 'Clique', 'f': 'Clique<div style="color:blue; font-style:italic">Terrific Trio</div>'},
+      /* parentID= */ 'Mother',
+      /* tooltipText= */ ''],
     [ /* nodeID= */ 'Cindy', /* parentID= */ 'Clique', /* tooltipText= */ 'Friend'],
     [ /* nodeID= */ 'Shaina', /* parentID= */ 'Clique', /* tooltipText= */ 'Creator of this site'],
     [ /* nodeID= */ 'Shivani', /* parentID= */ 'Clique', /* tooltipText= */ 'Friend']
@@ -100,7 +90,7 @@ function drawOrgChart() {
   });
 }
 
-/** Creates a map and adds it to the page. */
+/** Creates a map of Berkeley and adds it to the page. */
 function createMap() {
   const berkeley = {
     lat: 37.871853,
