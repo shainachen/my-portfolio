@@ -21,5 +21,6 @@ abstract class CommentEntity {
     Entity entity = new Entity(COMMENT_ENTITY_NAME);
     entity.setProperty(COMMENT_NAME_ID, name());
     entity.setProperty(COMMENT_TEXT_ID, commentText());
+    return entity;
   }
 }
