@@ -12,7 +12,85 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Creates a map and adds it to the page. */
+google.charts.load('current', {
+  'packages': ['corechart', 'orgchart', 'geochart'],
+  'mapsApiKey': 'MY_API_KEY'
+});
+google.charts.setOnLoadCallback(drawPieChart);
+google.charts.setOnLoadCallback(drawOrgChart);
+google.charts.setOnLoadCallback(drawRegionsMap);
+
+/** Creates a region map of populations by country and adds it to the page. */
+function drawRegionsMap() {
+  const data = google.visualization.arrayToDataTable([
+    ['Country', 'Population (millions)'],
+    ['China', 1394],
+    ['India', 1326],
+    ['United States', 332],
+    ['Indonesia', 267],
+    ['Pakistan', 233],
+    ['Brazil', 211],
+    ['Russia', 141],
+    ['Mexico', 128],
+    ['Canada', 37],
+  ]);
+
+  const options = {
+    colorAxis: {colors: ['rgb(228, 255, 250)', 'rgb(126, 228, 206)', 'rgb(70, 159, 150)']},
+  };
+
+  const chart = new google.visualization.GeoChart(document.getElementById('regionsmap'));
+  chart.draw(data, options);
+}
+
+/** Creates a pie chart of years I've spent in cities and adds it to the page. */
+function drawPieChart() {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Cities');
+  data.addColumn('number', 'Years');
+  data.addRows([
+    ['Berkeley', 2],
+    ['Shanghai', 1],
+    ['Sunnyvale', 17]
+  ]);
+
+  const options = {
+    'title': 'Years spent at cities',
+    'width': 500,
+    'height': 400
+  };
+
+  const chart = new google.visualization.PieChart(
+    document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+
+/** Creates an organizational chart and adds it to the page. */
+function drawOrgChart() {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Name');
+  data.addColumn('string', 'Parent');
+  data.addColumn('string', 'Tooltip');
+
+  data.addRows([
+    [ /* nodeID= */ {'v': 'Mother', 'f': 'Mother<div style="color:blue; font-style:italic">CEO</div>'},
+      /* parentID= */ '',
+      /* tooltipText= */ 'The CEO'],
+    [ /* nodeID= */ {'v': 'Clique', 'f': 'Clique<div style="color:blue; font-style:italic">Terrific Trio</div>'},
+      /* parentID= */ 'Mother',
+      /* tooltipText= */ ''],
+    [ /* nodeID= */ 'Cindy', /* parentID= */ 'Clique', /* tooltipText= */ 'Friend'],
+    [ /* nodeID= */ 'Shaina', /* parentID= */ 'Clique', /* tooltipText= */ 'Creator of this site'],
+    [ /* nodeID= */ 'Shivani', /* parentID= */ 'Clique', /* tooltipText= */ 'Friend']
+  ]);
+
+  const chart = new google.visualization.OrgChart(document.getElementById('orgchart'));
+  chart.draw(data, {
+    'allowHtml': true
+  });
+}
+
+/** Creates a map of Berkeley and adds it to the page. */
 function createMap() {
   const berkeley = {
     lat: 37.871853,
