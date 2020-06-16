@@ -11,9 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+ 
 package com.google.sps;
-
+ 
 import static com.google.sps.Constants.COMMENT_ENTITY_NAME;
 import static com.google.sps.Constants.COMMENT_NAME_ID;
 import static com.google.sps.Constants.COMMENT_TEXT_ID;
@@ -22,7 +22,7 @@ import static com.google.sps.Constants.INDEX_URL;
 import static com.google.sps.Constants.REQUEST_COMMENT_PARAM;
 import static com.google.sps.Constants.REQUEST_NAME_PARAM;
 import static com.google.sps.Constants.REQUEST_NUM_COMMENTS_PARAM;
-
+ 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -44,7 +44,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+ 
 /** Servlet that fetches and posts comments **/
 @WebServlet("/add-comments")
 public class DataServlet extends HttpServlet {
@@ -62,25 +62,27 @@ public class DataServlet extends HttpServlet {
     StreamSupport.stream(datastore.prepare(new Query(COMMENT_ENTITY_NAME)).asIterable().spliterator(), false)
     .limit(numComments)
     .forEach(entity -> {comments.add(String.format("%s: %s",entity.getProperty(COMMENT_NAME_ID), entity.getProperty(COMMENT_TEXT_ID)));});
-
+ 
     response.setContentType("application/json");
     response.getWriter().println(convertToJsonUsingGson(comments));
   }
-
+ 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Optional<String> commentText = Optional.ofNullable(request.getParameter(REQUEST_COMMENT_PARAM));
     if (commentText.isPresent()) {
       String name = request.getParameter(REQUEST_NAME_PARAM);
+      CommentEntity comment;
       if (name.equals("")) {
-        name = "Anonymous";
+        comment = CommentEntity.create(commentText.get());
+      } else {
+        comment = CommentEntity.create(name, commentText.get());
       }
-      CommentEntity comment = CommentEntity.create(name, commentText.get());
       datastore.put(comment.toEntity());
     }
     response.sendRedirect(INDEX_URL);        
   }
-
+ 
   private String convertToJsonUsingGson(List data) {
     Gson gson = new Gson();
     return gson.toJson(data);

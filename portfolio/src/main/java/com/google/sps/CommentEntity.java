@@ -14,10 +14,14 @@ abstract class CommentEntity {
     return new AutoValue_CommentEntity(name, commentText);
   }
  
+  static CommentEntity create(String commentText) {
+    return new AutoValue_CommentEntity("Anonymous", commentText);
+  }
+ 
   abstract String name();
   abstract String commentText();
  
-  public Entity toEntity() {
+  Entity toEntity() {
     Entity entity = new Entity(COMMENT_ENTITY_NAME);
     entity.setProperty(COMMENT_NAME_ID, name());
     entity.setProperty(COMMENT_TEXT_ID, commentText());
