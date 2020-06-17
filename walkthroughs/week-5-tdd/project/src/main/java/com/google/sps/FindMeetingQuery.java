@@ -21,6 +21,13 @@ import java.util.Collections;
 import java.util.List;
 
 public final class FindMeetingQuery {
+  /**
+  * Returns time ranges that satisfy all meeting request requirements and do not conflict with meeting
+  * attendees' other events for the day.
+  * @param events collection of events happening during the day
+  * @param request request for meeting with specified requirements (duration, attendees)
+  * @return collection of time ranges that requested meeting can be held at 
+  */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     Collection<String> meetingAttendees = request.getAttendees();
     long meetingDuration = request.getDuration();
@@ -34,27 +41,36 @@ public final class FindMeetingQuery {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
 
-    List eventsList = new ArrayList(events);
+    List<Event> eventsList = new ArrayList(events);
     Collections.sort(eventsList, Event.ORDER_BY_START);
     
-    int start = TimeRange.START_OF_DAY;
-    for (Event event : events){
+    int previousEndTime = TimeRange.START_OF_DAY;
+    for (Event event : eventsList){
+      //Check if meeting attendees also are event attendees
       if (!Collections.disjoint(event.getAttendees(), meetingAttendees)) {
         int eventStart = event.getWhen().start();
         int eventEnd = event.getWhen().end();
 
-        if (start + meetingDuration <= eventStart) {
-          availableTimes.add(TimeRange.fromStartEnd(start, eventStart, false));
+        //Check if there is time to hold meeting before event starts
+        if (previousEndTime + meetingDuration <= eventStart) {
+          availableTimes.add(TimeRange.fromStartEnd(previousEndTime, eventStart, false));
         }
 
-        if (eventEnd > start) {
-          start = eventEnd;
+        //Considers nested event case, where event B is checked second and previousEndTime < event B's end
+        //so we do not want to assign previousEndTime to be an earlier end time.
+        // Events  :       |----A----|
+        //                   |--B--|
+        // Day     : |---------------------|
+        // Options : |--1--|         |--2--|
+        if (previousEndTime < eventEnd) {
+          previousEndTime = eventEnd;
         }
       }
     }
 
-    if (meetingDuration + start <= TimeRange.END_OF_DAY) {
-      availableTimes.add(TimeRange.fromStartEnd(start, TimeRange.END_OF_DAY, true));
+    //Add remaining time of the day to available meeting time
+    if (meetingDuration + previousEndTime <= TimeRange.END_OF_DAY) {
+      availableTimes.add(TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY, true));
     }
     return availableTimes;
   }
