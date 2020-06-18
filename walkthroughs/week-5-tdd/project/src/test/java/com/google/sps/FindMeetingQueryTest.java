@@ -427,6 +427,4 @@ public final class FindMeetingQueryTest {
     //Assert
     Assert.assertEquals(expected, actual);
   }
-
 }
-
