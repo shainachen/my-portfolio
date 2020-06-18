@@ -14,6 +14,8 @@
 
 package com.google.sps;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,12 +31,22 @@ public final class FindMeetingQuery {
   * @return collection of time ranges that requested meeting can be held at 
   */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    Collection<String> meetingAttendees = request.getAttendees();
-    Collection<String> optionalAttendees = request.getOptionalAttendees();
+    Collection<String> mandatoryAttendees = request.getAttendees();
+    Collection<String> optionalAndMandatoryAttendees = Lists.newArrayList(Iterables.unmodifiableIterable(
+      Iterables.concat(request.getOptionalAttendees(), mandatoryAttendees)));
     long meetingDuration = request.getDuration();
-    Collection<TimeRange> availableTimes = new ArrayList();
-    Collection<TimeRange> availableTimesWithoutOptional = new ArrayList();
+    
+    Collection<TimeRange> availableTimes = availableTimeRanges(optionalAndMandatoryAttendees, events, meetingDuration);
 
+    // If time slots exists so both mandatory and optional attendees can attend, return those.
+    // Otherwise, return time slots that just fit mandatory attendees.
+    return availableTimes.isEmpty() && !mandatoryAttendees.isEmpty() ? 
+      availableTimeRanges(mandatoryAttendees, events, meetingDuration) : availableTimes; 
+  }
+
+  public Collection<TimeRange> availableTimeRanges(Collection<String> meetingAttendees, Collection<Event> events, long meetingDuration) {
+    Collection<TimeRange> availableTimes = new ArrayList();
+    
     if (meetingDuration > TimeRange.WHOLE_DAY.duration()) {
       return availableTimes;
     }
@@ -45,22 +57,17 @@ public final class FindMeetingQuery {
 
     List<Event> eventsList = new ArrayList(events);
     Collections.sort(eventsList, Event.ORDER_BY_START);
-    
     int previousEndTime = TimeRange.START_OF_DAY;
+
     for (Event event : eventsList){
       //Check if meeting attendees also are event attendees
-      boolean mandatoryAttendeesAtEvent = !Collections.disjoint(event.getAttendees(), meetingAttendees);
-      boolean optionalAttendeesAtEvent = !Collections.disjoint(event.getAttendees(), optionalAttendees);
-      if (mandatoryAttendeesAtEvent || optionalAttendeesAtEvent) {
+      if (!Collections.disjoint(event.getAttendees(), meetingAttendees)) {
         int eventStart = event.getWhen().start();
         int eventEnd = event.getWhen().end();
 
         //Check if there is time to hold meeting before event starts
         if (previousEndTime + meetingDuration <= eventStart) {
           TimeRange openRange = TimeRange.fromStartEnd(previousEndTime, eventStart, false);
-          if (mandatoryAttendeesAtEvent) {
-            availableTimesWithoutOptional.add(openRange);
-          }
           availableTimes.add(openRange);
         }
 
@@ -81,11 +88,8 @@ public final class FindMeetingQuery {
     if (meetingDuration + previousEndTime <= TimeRange.END_OF_DAY) {
       TimeRange timeToEndOfDay = TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY, true);
       availableTimes.add(timeToEndOfDay);
-      availableTimesWithoutOptional.add(timeToEndOfDay);
     }
-    System.out.println("available times emtpy" + availableTimes.isEmpty());
-    System.out.println("available without optional" + availableTimesWithoutOptional.size());
-    return availableTimes.isEmpty() ? availableTimesWithoutOptional : availableTimes; 
+    return availableTimes;
   }
 
 }
