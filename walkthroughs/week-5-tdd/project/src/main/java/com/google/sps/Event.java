@@ -54,7 +54,7 @@ public final class Event {
     this.attendees.addAll(attendees);
   }
 
-    /**
+  /**
    * A comparator for sorting events by their start time in ascending order.
    */
   public static final Comparator<Event> ORDER_BY_START = new Comparator<Event>() {
