@@ -274,7 +274,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void optionalAttendeeHasConflictingEventAndNotConsidered() {
+  public void testFindMeetingQuery_query_optionalAttendeeHasConflictingEventAndNotConsidered() {
     // Optional attendee has an all day event. We should see three options because each person has
     // split the restricted times, and the optional attendee's events are not considered since no
     // time slot exists such that mandatory and optional attendees can attend.
@@ -307,7 +307,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void everyAttendeeIncludingOptionalOnesAreConsidered() {
+  public void testFindMeetingQuery_query_everyAttendeeIncludingOptionalOnesAreConsidered() {
     // Optional attendee is considered because there are time slots that exist
     // such that both mandatory and optional attendees can attend.
     //
@@ -367,7 +367,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void allOptionalAttendeesReturnsMeetingTimeRangesAvailable() {
+  public void testFindMeetingQuery_query_allOptionalAttendeesReturnsMeetingTimeRangesAvailable() {
     // Only optional attendees are in the meeting request.
     // Expected returned time ranges are responsive to all optional attendee conflicts.
     // Events  : |--A--|      |--A--|            (optional)
@@ -399,7 +399,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void allOptionalAttendeesWithNoMeetingTimeRangesAvailable() {
+  public void testFindMeetingQuery_query_optionalAttendeesWithNoMeetingTimeRangesAvailable() {
     // Only optional attendees are in the meeting request.
     // Optional attendees do not have gaps in schedules, so no time ranges are returned.
     // Events  : |--A--|     |--A--|       (optional)
