@@ -30,14 +30,16 @@ public final class FindMeetingQuery {
   */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     Collection<String> meetingAttendees = request.getAttendees();
+    Collection<String> optionalAttendees = request.getOptionalAttendees();
     long meetingDuration = request.getDuration();
     Collection<TimeRange> availableTimes = new ArrayList();
+    Collection<TimeRange> availableTimesWithoutOptional = new ArrayList();
 
     if (meetingDuration > TimeRange.WHOLE_DAY.duration()) {
       return availableTimes;
     }
     
-    if (events.isEmpty() || meetingAttendees.isEmpty()) {
+    if (events.isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
 
@@ -47,19 +49,26 @@ public final class FindMeetingQuery {
     int previousEndTime = TimeRange.START_OF_DAY;
     for (Event event : eventsList){
       //Check if meeting attendees also are event attendees
-      if (!Collections.disjoint(event.getAttendees(), meetingAttendees)) {
+      boolean mandatoryAttendeesAtEvent = !Collections.disjoint(event.getAttendees(), meetingAttendees);
+      boolean optionalAttendeesAtEvent = !Collections.disjoint(event.getAttendees(), optionalAttendees);
+      if (mandatoryAttendeesAtEvent || optionalAttendeesAtEvent) {
         int eventStart = event.getWhen().start();
         int eventEnd = event.getWhen().end();
 
         //Check if there is time to hold meeting before event starts
         if (previousEndTime + meetingDuration <= eventStart) {
-          availableTimes.add(TimeRange.fromStartEnd(previousEndTime, eventStart, false));
+          TimeRange openRange = TimeRange.fromStartEnd(previousEndTime, eventStart, false);
+          if (mandatoryAttendeesAtEvent) {
+            availableTimesWithoutOptional.add(openRange);
+          }
+          availableTimes.add(openRange);
         }
 
         //Considers nested event case, where event B is checked second and previousEndTime < event B's end
         //so we do not want to assign previousEndTime to be an earlier end time.
         // Events  :       |----A----|
         //                   |--B--|
+        
         // Day     : |---------------------|
         // Options : |--1--|         |--2--|
         if (previousEndTime < eventEnd) {
@@ -70,8 +79,13 @@ public final class FindMeetingQuery {
 
     //Add remaining time of the day to available meeting time
     if (meetingDuration + previousEndTime <= TimeRange.END_OF_DAY) {
-      availableTimes.add(TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY, true));
+      TimeRange timeToEndOfDay = TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY, true);
+      availableTimes.add(timeToEndOfDay);
+      availableTimesWithoutOptional.add(timeToEndOfDay);
     }
-    return availableTimes;
+    System.out.println("available times emtpy" + availableTimes.isEmpty());
+    System.out.println("available without optional" + availableTimesWithoutOptional.size());
+    return availableTimes.isEmpty() ? availableTimesWithoutOptional : availableTimes; 
   }
+
 }
