@@ -24,11 +24,13 @@ import java.util.List;
 
 public final class FindMeetingQuery {
   /**
-  * Returns time ranges that satisfy all meeting request requirements and do not conflict with meeting
-  * attendees' other events for the day.
+  * Returns time ranges that satisfy meeting request requirements and do not conflict with meeting
+  * attendees' other events.
+  * Considers mandatory and optional attendees. If no time ranges are available to accomodate both
+  * types of attendees, returns time ranges that accomodate just mandatory attendees.
   * @param events collection of events happening during the day
   * @param request request for meeting with specified requirements (duration, attendees)
-  * @return collection of time ranges that requested meeting can be held at 
+  * @return collection of time ranges that requested meeting can be held at. 
   */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     Collection<String> mandatoryAttendees = request.getAttendees();
@@ -36,43 +38,50 @@ public final class FindMeetingQuery {
       Iterables.concat(request.getOptionalAttendees(), mandatoryAttendees)));
     long meetingDuration = request.getDuration();
     
-    Collection<TimeRange> availableTimes = availableTimeRanges(optionalAndMandatoryAttendees, events, meetingDuration);
-
-    // If time slots exists so both mandatory and optional attendees can attend, return those.
-    // Otherwise, return time slots that just fit mandatory attendees.
-    return availableTimes.isEmpty() && !mandatoryAttendees.isEmpty() ? 
-      availableTimeRanges(mandatoryAttendees, events, meetingDuration) : availableTimes; 
-  }
-
-  public Collection<TimeRange> availableTimeRanges(Collection<String> meetingAttendees, Collection<Event> events, long meetingDuration) {
-    Collection<TimeRange> availableTimes = new ArrayList();
-    
     if (meetingDuration > TimeRange.WHOLE_DAY.duration()) {
-      return availableTimes;
+      return new ArrayList();
     }
     
     if (events.isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
 
+    Collection<TimeRange> availableTimes = availableTimeRanges(optionalAndMandatoryAttendees, events, meetingDuration);
+
+    // If time slots exists that both mandatory and optional attendees can attend, return those.
+    // Otherwise, return time slots that just fit mandatory attendees.
+    return availableTimes.isEmpty() && !mandatoryAttendees.isEmpty() ? 
+      availableTimeRanges(mandatoryAttendees, events, meetingDuration) : availableTimes; 
+  }
+
+  /**
+  * Returns time ranges for meeting given list of meeting attendees. Helper method for query().
+  * @param events collection of events happening during the day
+  * @param meetingAttendees collection of meeting attendees
+  * @param meetingDuration length of meeting in minutes
+  * @return collection of time ranges that requested meeting can be held at 
+  */
+  private Collection<TimeRange> availableTimeRanges(Collection<String> meetingAttendees, Collection<Event> events, long meetingDuration) {
+    Collection<TimeRange> availableTimes = new ArrayList();
     List<Event> eventsList = new ArrayList(events);
+
+    //Order events by start time
     Collections.sort(eventsList, Event.ORDER_BY_START);
     int previousEndTime = TimeRange.START_OF_DAY;
 
     for (Event event : eventsList){
-      //Check if meeting attendees also are event attendees
+      //Check if meeting attendees are event attendees
       if (!Collections.disjoint(event.getAttendees(), meetingAttendees)) {
         int eventStart = event.getWhen().start();
         int eventEnd = event.getWhen().end();
 
         //Check if there is time to hold meeting before event starts
         if (previousEndTime + meetingDuration <= eventStart) {
-          TimeRange openRange = TimeRange.fromStartEnd(previousEndTime, eventStart, false);
-          availableTimes.add(openRange);
+          availableTimes.add(TimeRange.fromStartEnd(previousEndTime, eventStart, false));
         }
 
-        //Considers nested event case, where event B is checked second and previousEndTime < event B's end
-        //so we do not want to assign previousEndTime to be an earlier end time.
+        //Considers nested event case, where event B is checked second and previousEndTime > event B's end.
+        //In this case, we do not want to assign previousEndTime to be an earlier end time.
         // Events  :       |----A----|
         //                   |--B--|
         
@@ -86,10 +95,8 @@ public final class FindMeetingQuery {
 
     //Add remaining time of the day to available meeting time
     if (meetingDuration + previousEndTime <= TimeRange.END_OF_DAY) {
-      TimeRange timeToEndOfDay = TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY, true);
-      availableTimes.add(timeToEndOfDay);
+      availableTimes.add(TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY, true));
     }
     return availableTimes;
   }
-
 }
