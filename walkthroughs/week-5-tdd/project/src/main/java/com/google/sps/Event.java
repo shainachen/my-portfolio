@@ -36,7 +36,7 @@ public final class Event {
    * @param when The time when the event takes place. Must be non-null.
    * @param attendees The collection of people attending the event. Must be non-null.
    */
-  public Event(String title, TimeRange when, Collection<String> attendees) {
+  public Event(String title, TimeRange when, Set<String> attendees) {
     if (title == null) {
       throw new IllegalArgumentException("title cannot be null");
     }
