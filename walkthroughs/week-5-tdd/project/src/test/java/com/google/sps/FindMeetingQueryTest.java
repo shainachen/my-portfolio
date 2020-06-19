@@ -307,7 +307,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void testQuery_optionalAttendeeIsConsidered_returnsValidTimesForMandatoryAndOptionalAttendees() {
+  public void testQuery_optionalAttendeeHasAvailability_returnsValidTimesForMandatoryAndOptionalAttendees() {
     // Optional attendee is considered because there are time slots that exist
     // such that both mandatory and optional attendees can attend.
     //
@@ -336,7 +336,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void testQuery_optionalAttendeeScheduleCannotFitMeetingDuration_returnsValidTimesForOtherGuests() {
+  public void testQuery_optionalAttendeeCannotSatisfyMeetingDuration_returnsValidTimesForOtherGuests() {
     // Optional attendee is ignored because considering their schedule results in a smaller time slot
     // than the requested meeting duration.
     //
@@ -363,7 +363,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void testQuery_onlyOptioinalAttendeesInMeeting_returnsValidTimes() {
+  public void testQuery_onlyOptionalAttendeesInMeeting_returnsValidTimes() {
     // Only optional attendees are in the meeting request.
     // Expected returned time ranges are responsive to all optional attendee conflicts.
     // Events  : |--A--|      |--A--|            (optional)
