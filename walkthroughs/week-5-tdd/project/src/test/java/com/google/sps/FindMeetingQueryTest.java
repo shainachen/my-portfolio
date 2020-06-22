@@ -307,7 +307,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void testQuery_optionalAttendeeHasAvailability_returnsValidTimesForMandatoryAndOptionalAttendees() {
+  public void testQuery_optionalAttendeeHasAvailability_returnsValidTimesForAllAttendees() {
     // Optional attendee is considered because there are time slots that exist
     // such that both mandatory and optional attendees can attend.
     //
