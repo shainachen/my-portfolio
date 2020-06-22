@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,7 +38,7 @@ public final class MeetingRequestTest {
 
   @Test
   public void CantAddOptionalAttendeeWhoIsAlsoMandatory() {
-    MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A), DURATION_1_HOUR);
+    MeetingRequest request = new MeetingRequest(ImmutableSet.of(PERSON_A), DURATION_1_HOUR);
     request.addOptionalAttendee(PERSON_A);
 
     int actual = request.getOptionalAttendees().size();

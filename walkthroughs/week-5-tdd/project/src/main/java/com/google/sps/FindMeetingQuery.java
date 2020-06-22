@@ -14,10 +14,101 @@
 
 package com.google.sps;
 
+import static java.lang.Math.max;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public final class FindMeetingQuery {
+  /**
+  * Returns time ranges that satisfy meeting request requirements and do not conflict with meeting
+  * attendees' other events.
+  * Considers mandatory and optional attendees. If no time ranges are available to accomodate both
+  * types of attendees, returns time ranges that accomodate just mandatory attendees.
+  *
+  * @param events collection of events happening during the day
+  * @param request request for meeting with specified requirements (duration, attendees)
+  * @return collection of time ranges that requested meeting can be held at. 
+  */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    throw new UnsupportedOperationException("TODO: Implement this method.");
+    Set<String> mandatoryAttendees = request.getAttendees();
+    Set<String> optionalAndMandatoryAttendees = new ImmutableSet.Builder<String>()
+          .addAll(request.getOptionalAttendees())
+          .addAll(mandatoryAttendees)
+          .build();
+    long meetingDuration = request.getDuration();
+    
+    if (meetingDuration > TimeRange.WHOLE_DAY.duration()) {
+      return new ArrayList();
+    }
+    
+    if (events.isEmpty()) {
+      return Arrays.asList(TimeRange.WHOLE_DAY);
+    }
+
+    Collection<TimeRange> availableTimes = 
+          availableTimeRanges(optionalAndMandatoryAttendees, events, meetingDuration);
+
+    // If time slots exists that both mandatory and optional attendees can attend, return those.
+    // Otherwise, return time slots that just fit mandatory attendees.
+    boolean noAvailableTimesWithOptionalAttendees = 
+            availableTimes.isEmpty() && !mandatoryAttendees.isEmpty();
+    return noAvailableTimesWithOptionalAttendees ? 
+      availableTimeRanges(mandatoryAttendees, events, meetingDuration) : availableTimes; 
+  }
+
+  /**
+  * Returns time ranges for meeting given list of meeting attendees.
+  *
+  * @param events collection of events happening during the day
+  * @param meetingAttendees collection of meeting attendees
+  * @param meetingDuration length of meeting in minutes
+  * @return collection of time ranges that requested meeting can be held at 
+  */
+  private Collection<TimeRange> availableTimeRanges(Set<String> meetingAttendees,
+            Collection<Event> events, long meetingDuration) {
+    Collection<TimeRange> availableTimes = new ArrayList();
+    List<Event> eventsList = new ArrayList(events);
+
+    // Order events by start time.
+    Collections.sort(eventsList, Event.ORDER_BY_START);
+    int previousEndTime = TimeRange.START_OF_DAY;
+
+    for (Event event : eventsList){
+      // Check if meeting attendees are event attendees.
+      if (!Collections.disjoint(event.getAttendees(), meetingAttendees)) {
+        int eventStart = event.getWhen().start();
+        int eventEnd = event.getWhen().end();
+
+        // Check if there is time to hold meeting before event starts.
+        if (previousEndTime + meetingDuration <= eventStart) {
+          availableTimes.add(TimeRange.fromStartEnd(previousEndTime, eventStart,
+                /* inclusive= */ false));
+        }
+
+        // Considers nested event: event B is checked second and previousEndTime > event B's end.
+        // In this case, we do not want to assign previousEndTime to be an earlier end time.
+        // Events  :       |----A----|
+        //                   |--B--|
+        
+        // Day     : |---------------------|
+        // Options : |--1--|         |--2--|
+        previousEndTime = max(eventEnd, previousEndTime);
+      }
+    }
+
+    // Add remaining time of the day to available meeting time.
+    if (meetingDuration + previousEndTime <= TimeRange.END_OF_DAY) {
+      availableTimes.add(TimeRange.fromStartEnd(previousEndTime, TimeRange.END_OF_DAY,
+                /* inclusive= */ true));
+    }
+    return availableTimes;
   }
 }

@@ -16,6 +16,7 @@ package com.google.sps;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public final class Event {
    * @param when The time when the event takes place. Must be non-null.
    * @param attendees The collection of people attending the event. Must be non-null.
    */
-  public Event(String title, TimeRange when, Collection<String> attendees) {
+  public Event(String title, TimeRange when, Set<String> attendees) {
     if (title == null) {
       throw new IllegalArgumentException("title cannot be null");
     }
@@ -52,6 +53,16 @@ public final class Event {
     this.when = when;
     this.attendees.addAll(attendees);
   }
+
+  /**
+   * A comparator for sorting events by their start time in ascending order.
+   */
+  public static final Comparator<Event> ORDER_BY_START = new Comparator<Event>() {
+    @Override
+    public int compare(Event a, Event b) {
+      return Long.compare(a.when.start(), b.when.start());
+    }
+  };
 
   /**
    * Returns the human-readable name for this event.
